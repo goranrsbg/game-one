@@ -153,7 +153,9 @@ public class GameEngine implements Runnable {
         Renderer renderer = Renderer.of(staticShader);
 
         RawModel model = OBJLoader.loadObjModel("dragon", loader);
-        ModelTexture texture = new ModelTexture(loader.loadTexture("whiteSmoke"));
+        ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
+        texture.setShineDumper(10f);
+        texture.setReflectivity(1f);
         TexturedModel texturedModel = new TexturedModel(model, texture);
         Entity entity = new Entity(texturedModel, new Vector3f(0.0f, -5f, -25.0f), 0f, 0f, 0f, 1f);
         Camera camera = new Camera(window);

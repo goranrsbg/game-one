@@ -46,6 +46,7 @@ public class Renderer {
         GL20.glEnableVertexAttribArray(Const.V2);
         Matrix4f transformationMatrix = Maths.createTransformationMatrix(entity.getPosition(), entity.getRx(), entity.getRy(), entity.getRz(), entity.getScale());
         shader.loadTransformationMatrix(transformationMatrix);
+        shader.loadShineVariables(texturedModel.getModelTexture());
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.getModelTexture().getTextureId());
         GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, Const.V0L);

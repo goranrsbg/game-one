@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 
 import rs.bg.goran.entities.Camera;
 import rs.bg.goran.entities.Light;
+import rs.bg.goran.textures.ModelTexture;
 import rs.bg.goran.toolbox.Const;
 import rs.bg.goran.toolbox.Maths;
 
@@ -19,6 +20,8 @@ public class StaticShader extends ShaderProgram {
     private int location_viewMatrix;
     private int location_lightPosition;
     private int location_lightColor;
+    private int location_shineDumper;
+    private int location_reflectiviti;
 
     public StaticShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -42,6 +45,13 @@ public class StaticShader extends ShaderProgram {
         location_viewMatrix = getUnifimLocation("viewMatrix");
         location_lightPosition = getUnifimLocation("lightPosition");
         location_lightColor = getUnifimLocation("lightColor");
+        location_shineDumper = getUnifimLocation("shineDumper");
+        location_reflectiviti = getUnifimLocation("reflectiviti");
+    }
+
+    public void loadShineVariables(ModelTexture texture) {
+        loadFloat(location_shineDumper, texture.getShineDumper());
+        loadFloat(location_reflectiviti, texture.getReflectivity());
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
