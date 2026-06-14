@@ -1,0 +1,29 @@
+/target/
+
+# Eclipse project files
+.project
+.classpath
+.settings/
+
+# Output directories
+bin/
+gen/
+
+# Eclipse metadata and history
+.metadata/
+.recommenders/
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored Eclipse launch configurations
+*.launch
+
+# CDT (C/C++ Development Tools)
+.cproject
+
+# JDT (Java Development Tools)
+*.class
+
+# Factorypath (Annotation processing)
+.factorypath
