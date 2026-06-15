@@ -180,6 +180,8 @@ public class GameEngine implements Runnable {
 
             camera.move();
 
+            renderer.move();
+
             renderer.render(light, camera);
 
             glfwSwapBuffers(window); // swap the color buffers

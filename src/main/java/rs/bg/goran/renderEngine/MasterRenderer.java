@@ -24,6 +24,15 @@ public class MasterRenderer {
         this.entities = new HashMap<>();
     }
 
+    public void move() {
+        entities.forEach((_, entities) -> {
+            for (Entity entity : entities) {
+                entity.increaseRotation(0f, 0.5f, 0f);
+            }
+        });
+
+    }
+
     public void render(Light sun, Camera camera) {
         shader.start();
         shader.loadLight(sun);
@@ -41,4 +50,5 @@ public class MasterRenderer {
     public void clean() {
         shader.clean();
     }
+
 }
