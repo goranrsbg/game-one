@@ -5,18 +5,22 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
 import rs.bg.goran.entities.Camera;
+import rs.bg.goran.entities.Entity;
 
 public class Maths {
 
-    public static Matrix4f createTransformationMatrix(Vector3fc translation, float rx, float ry, float rz,
-            float scale) {
-        Matrix4f matrix = new Matrix4f();
-        return matrix.identity()
-                     .translate(translation)
-                     .rotateX((float) Math.toRadians(rx))
-                     .rotateY((float) Math.toRadians(ry))
-                     .rotateZ((float) Math.toRadians(rz))
-                     .scale(scale);
+    public static void createTransformationMatrix(Entity entity) {
+        createTransformationMatrix(entity.getTransformationMatrix(), entity.getPosition(), entity.getRx(), entity.getRy(), entity.getRz(), entity.getScale());
+    }
+
+    public static void createTransformationMatrix(Matrix4f destination, Vector3fc translation, float rx, float ry,
+            float rz, float scale) {
+        destination.identity()
+                   .translate(translation)
+                   .rotateX((float) Math.toRadians(rx))
+                   .rotateY((float) Math.toRadians(ry))
+                   .rotateZ((float) Math.toRadians(rz))
+                   .scale(scale);
     }
 
     public static void createViewMatrix(Camera camera) {

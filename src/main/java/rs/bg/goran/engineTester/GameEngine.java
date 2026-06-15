@@ -26,16 +26,20 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
+import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 import java.nio.IntBuffer;
+import java.util.Random;
 
 import org.joml.Vector3f;
 import org.lwjgl.Version;
@@ -51,9 +55,8 @@ import rs.bg.goran.entities.Light;
 import rs.bg.goran.models.RawModel;
 import rs.bg.goran.models.TexturedModel;
 import rs.bg.goran.renderEngine.Loader;
+import rs.bg.goran.renderEngine.MasterRenderer;
 import rs.bg.goran.renderEngine.OBJLoader;
-import rs.bg.goran.renderEngine.Renderer;
-import rs.bg.goran.shaders.StaticShader;
 import rs.bg.goran.textures.ModelTexture;
 import rs.bg.goran.toolbox.Const;
 
@@ -146,32 +149,38 @@ public class GameEngine implements Runnable {
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
 
         // LOOP
         Loader loader = Loader.of();
-        StaticShader staticShader = StaticShader.of();
-        Renderer renderer = Renderer.of(staticShader);
 
-        RawModel model = OBJLoader.loadObjModel("dragon", loader);
-        ModelTexture texture = new ModelTexture(loader.loadTexture("white"));
+        RawModel model = OBJLoader.loadObjModel("cube", loader);
+        ModelTexture texture = new ModelTexture(loader.loadTexture("image"));
         texture.setShineDumper(10f);
         texture.setReflectivity(1f);
         TexturedModel texturedModel = new TexturedModel(model, texture);
-        Entity entity = new Entity(texturedModel, new Vector3f(0.0f, -5f, -25.0f), 0f, 0f, 0f, 1f);
         Camera camera = new Camera(window);
-        Light light = new Light(new Vector3f(0f, 0f, -20f), new Vector3f(1f, 1f, 1f));
+        Light light = new Light(new Vector3f(3000f, 3000f, 3000f), new Vector3f(1f, 1f, 1f));
+        Random r = new Random();
+
+        MasterRenderer renderer = new MasterRenderer();
+
+        for (int i = 0; i < 200; i++) {
+            float x = r.nextFloat() * 100f - 50f;
+            float y = r.nextFloat() * 100f - 50f;
+            float z = r.nextFloat() * -300f;
+            Entity entity = new Entity(texturedModel, new Vector3f(x, y, z), r.nextFloat() * 180f, r.nextFloat() * 180f,
+                    0f, 1f);
+            renderer.processEntity(entity);
+        }
 
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             camera.move();
-            entity.increaseRotation(0f, 1f, 0f);
 
-            staticShader.start();
-            staticShader.loadLight(light);
-            staticShader.loadViewMatrix(camera);
-            renderer.render(entity, staticShader);
-            staticShader.stop();
+            renderer.render(light, camera);
 
             glfwSwapBuffers(window); // swap the color buffers
             // Poll for window events. The key callback above will only be
@@ -180,7 +189,7 @@ public class GameEngine implements Runnable {
             updateFps();
         }
 
-        staticShader.clean();
+        renderer.clean();
         loader.clean();
     }
 
