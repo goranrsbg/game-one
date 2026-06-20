@@ -6,11 +6,16 @@ import org.joml.Vector3fc;
 
 import rs.bg.goran.entities.Camera;
 import rs.bg.goran.entities.Entity;
+import rs.bg.goran.terains.Terain;
 
 public class Maths {
 
     public static void createTransformationMatrix(Entity entity) {
         createTransformationMatrix(entity.getTransformationMatrix(), entity.getPosition(), entity.getRx(), entity.getRy(), entity.getRz(), entity.getScale());
+    }
+
+    public static void createTransformationMatrix(Terain terain) {
+        createTransformationMatrix(terain.getTransformationMatrix(), terain.getPosition(), Const.V0f, Const.V0f, Const.V0f, Const.V1f);
     }
 
     public static void createTransformationMatrix(Matrix4f destination, Vector3fc translation, float rx, float ry,

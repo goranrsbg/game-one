@@ -22,6 +22,7 @@ public class StaticShader extends ShaderProgram {
     private int location_lightColor;
     private int location_shineDumper;
     private int location_reflectiviti;
+    private int location_useFakeLighting;
 
     public StaticShader() {
         super(VERTEX_FILE, FRAGMENT_FILE);
@@ -47,6 +48,11 @@ public class StaticShader extends ShaderProgram {
         location_lightColor = getUnifimLocation("lightColor");
         location_shineDumper = getUnifimLocation("shineDumper");
         location_reflectiviti = getUnifimLocation("reflectiviti");
+        location_useFakeLighting = getUnifimLocation("useFakeLighting");
+    }
+
+    public void loadFakeLightingVariable(boolean useFake) {
+        loadBoolean(location_useFakeLighting, useFake);
     }
 
     public void loadShineVariables(ModelTexture texture) {

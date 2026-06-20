@@ -26,14 +26,11 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_BACK;
 import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
 import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glCullFace;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -57,6 +54,7 @@ import rs.bg.goran.models.TexturedModel;
 import rs.bg.goran.renderEngine.Loader;
 import rs.bg.goran.renderEngine.MasterRenderer;
 import rs.bg.goran.renderEngine.OBJLoader;
+import rs.bg.goran.terains.Terain;
 import rs.bg.goran.textures.ModelTexture;
 import rs.bg.goran.toolbox.Const;
 
@@ -149,23 +147,20 @@ public class GameEngine implements Runnable {
         // Set the clear color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glEnable(GL_DEPTH_TEST);
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
 
         // LOOP
         Loader loader = Loader.of();
+        MasterRenderer renderer = new MasterRenderer();
 
         RawModel model = OBJLoader.loadObjModel("cube", loader);
         ModelTexture texture = new ModelTexture(loader.loadTexture("image"));
         texture.setShineDumper(10f);
         texture.setReflectivity(1f);
         TexturedModel texturedModel = new TexturedModel(model, texture);
-        Camera camera = new Camera(window);
-        Light light = new Light(new Vector3f(3000f, 3000f, 3000f), new Vector3f(1f, 1f, 1f));
+
+        Light light = new Light(new Vector3f(20000f, 20000f, 20000f), new Vector3f(1f, 1f, 1f));
+
         Random r = new Random();
-
-        MasterRenderer renderer = new MasterRenderer();
-
         for (int i = 0; i < 200; i++) {
             float x = r.nextFloat() * 100f - 50f;
             float y = r.nextFloat() * 100f - 50f;
@@ -175,13 +170,19 @@ public class GameEngine implements Runnable {
             renderer.processEntity(entity);
         }
 
+        Terain terain1 = new Terain(Const.V0, Const.V0, loader, new ModelTexture(loader.loadTexture("grass")));
+        Terain terain2 = new Terain(Const.V1, Const.V0, loader, new ModelTexture(loader.loadTexture("grass")));
+        renderer.processTerain(terain1);
+        renderer.processTerain(terain2);
+
+        Camera camera = new Camera(window);
+
         while (!glfwWindowShouldClose(window)) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
             camera.move();
 
             renderer.move();
-
             renderer.render(light, camera);
 
             glfwSwapBuffers(window); // swap the color buffers
